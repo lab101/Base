@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<cinder>
+	<block
+		name="Base" 
+		id="be.lab101.base"
+		git="git://github.com/Potion/Cinder-poScene.git"
+		author="Lab101"
+		summary="Basic app setup"
+		license="BSD New"
+		version="1.0"
+		url="http://www.lab101.be"
+		>
+
+		<supports os="macosx" />
+		<supports os="msw" />
+
+		<headerPattern>src/*.h</headerPattern>
+		<sourcePattern>src/*.cpp</sourcePattern>
+
+		<headerPattern>src/Notifications/*.h</headerPattern>
+		<sourcePattern>src/Notifications/*.cpp</sourcePattern>
+
+		<headerPattern>src/Settings/*.h</headerPattern>
+		<sourcePattern>src/Settings/*.cpp</sourcePattern>
+
+		<platform os="macosx">
+			<includePath>src</includePath>
+		</platform>
+
+		<platform os="msw">
+			<includePath>src</includePath>
+		</platform>
+
+	</block>
+
+	<template>templates/basic/template.xml</template>
+</cinder>
