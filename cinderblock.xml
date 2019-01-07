@@ -3,7 +3,7 @@
 	<block
 		name="Base" 
 		id="be.lab101.base"
-		git="git://github.com/Potion/Cinder-poScene.git"
+		git="git://github.com/lab101/Base"
 		author="Lab101"
 		summary="Basic app setup"
 		license="BSD New"
@@ -34,4 +34,5 @@
 	</block>
 
 	<template>templates/basic/template.xml</template>
+	<template>templates/poSceneBasic/template.xml</template>
 </cinder>

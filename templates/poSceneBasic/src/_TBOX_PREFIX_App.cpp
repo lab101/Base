@@ -9,6 +9,9 @@
 #include "../blocks/Base/src/Notifications/NotificationManager.h"
 #include "../blocks/Base/src/Notifications/NotificationLogger.h"
 
+// poscene
+#include "poScene/Scene.h"
+#include "UI/MainViewController.h"
 
 using namespace ci;
 using namespace ci::app;
@@ -19,7 +22,9 @@ class _TBOX_PREFIX_App
 {
 
 	SettingController       mSettingController;
-
+	po::scene::SceneRef mScene;
+	MainViewControllerRef mViewController;
+	
   public:
 	void setup() override;
 	void update() override;
@@ -53,6 +58,11 @@ void _TBOX_PREFIX_App::setup()
 
 	ci::log::makeLogger<NotificationLogger>();
 	ci::log::makeLogger<ci::log::LoggerFileRotating>(logFolder, "_TBOX_PREFIX_App.%Y.%m.%d.log", true);
+	
+		// poscene
+	mViewController = MainViewController::create();
+	mViewController->getView()->setScale(scale, scale);
+	mScene = po::scene::Scene::create(mViewController);
    
 }
 
@@ -74,7 +84,7 @@ void _TBOX_PREFIX_App::keyDown(KeyEvent event) {
 
 void _TBOX_PREFIX_App::update()
 {
-   
+   	mScene->update();
 }
 
 
@@ -85,7 +95,8 @@ void _TBOX_PREFIX_App::draw()
 	gl::clear( Color( 0, 0, 0 ) );
 	
 	
-	
+	ci::gl::color(1, 1, 1);
+	mScene->draw();
 	
 	
 	

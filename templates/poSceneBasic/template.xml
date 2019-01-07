@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<cinder>
+    <template name="lab101: BasicPoScene" parent="org.libcinder.apptemplates.basicopengl">
+		<requires>com.potiondesign.poscene</requires>
+        <source replaceContents="true" replaceName="true">src/_TBOX_PREFIX_App.cpp</source>
+      
+		
+		<headerPattern>src/UI/*.h</headerPattern>
+		<sourcePattern>src/UI/*.cpp</sourcePattern>
+		
+		<asset>assets/UI/a.jpg</asset>
+     </template>
+</cinder>

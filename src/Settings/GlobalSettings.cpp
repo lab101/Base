@@ -46,6 +46,8 @@ GlobalSettings::GlobalSettings(){
 	resetScreenTime = Setting<int>("goToScreensaverTime", 60);
 	addSetting(&resetScreenTime);
 
+	highlighColor = Color(.8, .8, .8);
+
 }
 
 
