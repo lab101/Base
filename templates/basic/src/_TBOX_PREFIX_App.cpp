@@ -3,12 +3,10 @@
 #include "cinder/gl/gl.h"
 
 // basic includes
-#include "../blocks/Base/src/Settings/SettingManager.h"
 #include "../blocks/Base/src/Settings/SettingController.h"
-#include "../blocks/Base/src/Settings/GlobalSettings.h"
 #include "../blocks/Base/src/Notifications/NotificationManager.h"
 #include "../blocks/Base/src/Notifications/NotificationLogger.h"
-
+#include "GlobalSettings.h"
 
 using namespace ci;
 using namespace ci::app;
@@ -36,6 +34,10 @@ class _TBOX_PREFIX_App
 
 void _TBOX_PREFIX_App::setup()
 {
+
+	GS()->setup("_TBOX_PREFIX_App");
+	mSettingController.setup(&(GS()->mSettingManager));
+
 // screen setup paramaters
 	float const scale = GS()->screenScale.value();
 
@@ -59,7 +61,7 @@ void _TBOX_PREFIX_App::setup()
 
 void _TBOX_PREFIX_App::keyDown(KeyEvent event) {
 
-	if (mSettingController.checkKeyDown(event)){
+	if (GS()->debugMode.value() && mSettingController.checkKeyDown(event)) {
 		return;
 	}
 	else if (event.getChar() == 'd'){

@@ -9,18 +9,18 @@ using namespace std;
 using namespace ci;
 
 
-SettingManager*  SettingManager::instance = NULL;
-
-
-SettingManager* SettingManager::Instance(){
-    if (instance == NULL)
-    {
-        instance = new SettingManager();
-        
-    }
-    
-    return instance;
-}
+//SettingManager*  SettingManager::instance = NULL;
+//
+//
+//SettingManager* SettingManager::Instance(){
+//    if (instance == NULL)
+//    {
+//        instance = new SettingManager();
+//        
+//    }
+//    
+//    return instance;
+//}
 
 
 

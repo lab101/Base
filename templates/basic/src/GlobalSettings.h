@@ -1,33 +1,41 @@
 #pragma once
 
-#include "../Singleton.h"
 #include "cinder/app/App.h"
 
-#include "SettingManager.h"
-#include "SettingBase.h"
-#include "SettingString.h"
+#include "../blocks/Base/src/Singleton.h"
+
+#include "../blocks/Base/src/Settings/SettingManager.h"
+#include "../blocks/Base/src/Settings/SettingBase.h"
+#include "../blocks/Base/src/Settings/SettingString.h"
+
 
 class GlobalSettings{
 
 
 public:
 
-	GlobalSettings();
+	SettingManager mSettingManager;
 
-    ci::Color       highlighColor;
     
 	Setting<bool>   debugMode;
 	Setting<bool>   isFullscreen;
 	Setting<bool>   isMouseOn;
 
+
+    GlobalSettings();
+    
+    //Setting<std::string> meshFolder;
     Setting<int> screenWidth;
 	Setting<int> screenHeight;
-	
 	Setting<int> resetScreenTime;
 	Setting<float> screenScale;
+  
+	void setup(std::string appName);
+
     ci::vec2 getScreenSize();
 
 };
+
 
 
 typedef Singleton<GlobalSettings> GlobalSettingsSingleton;

@@ -1,7 +1,7 @@
 #pragma once
 
 #include <string>
-#include "cinder/json.h"
+#include "cinder/Json.h"
 
 class SettingBase{
 	std::string mKey;

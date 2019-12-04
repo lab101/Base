@@ -2,5 +2,7 @@
 <cinder>
     <template name="lab101: Basic" parent="org.libcinder.apptemplates.basicopengl">
         <source replaceContents="true" replaceName="true">src/_TBOX_PREFIX_App.cpp</source>
+	<source replaceContents="false" replaceName="false">src/GlobalSettings.cpp</source>	
+	<header replaceContents="false" replaceName="false">src/GlobalSettings.h</header>
      </template>
 </cinder>

@@ -20,17 +20,11 @@
 #include "cinder/Filesystem.h"
 #include "cinder/Log.h"
 #include "cinder/app/App.h"
-#include "cinder/Signals.h"
+//#include "cinder/Signals.h"
 #include "cinder/Json.h"
 #include "cinder/Utilities.h"
 
 #include "SettingBase.h"
-
-
-
-
-
-
 
 
 // SETTING tweakable
@@ -142,11 +136,14 @@ class SettingManager{
     //map with setting from the settings file form disk.
     ci::JsonTree storedSettingsJson;
     
+	std::string mAppName;
+
+
     std::string const getSettingPath(){
         //return ci::app::getAssetPath("").string() + "/settings.json";
       //  getDocumentsDirectory();
         
-        return ci::getDocumentsDirectory().string() + "/settings_fnce.json";
+		return ci::getDocumentsDirectory().string() + "/settings_" + mAppName + ".json";
     }
     static SettingManager* instance;
     
@@ -163,9 +160,14 @@ public:
     }
     
     SettingManager(){
-        readSettings();
+        settings.reserve(200);
+      //  readSettings();
     }
     
+	void setAppName(std::string appName){
+		mAppName = appName;
+	}
+
     
     void setSettingByJSON(ci::JsonTree data);
     
@@ -198,8 +200,8 @@ public:
 
 
 
-inline void addSetting(SettingBase* setting){
-    SettingManager::Instance()->addSetting(setting);
-}
+//inline void addSetting(SettingBase* setting){
+//    SettingManager::Instance()->addSetting(setting);
+//}
 
 

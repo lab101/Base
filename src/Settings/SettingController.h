@@ -1,5 +1,6 @@
 #include "cinder/app/App.h"
-#include "cinder/font.h"
+#include "cinder/Font.h"
+#include "SettingManager.h"
 
 class SettingController{
     
@@ -12,10 +13,12 @@ class SettingController{
     ci::Color activeBGColor;
     ci::Color normalBGColor;
     
+    SettingManager* mSettingManager;
+    
     bool isSetup = false;
 public:
     
-    void setup();
+    void setup(SettingManager* settingManger);
     void draw();
     bool checkKeyDown(ci::app::KeyEvent event);
     
