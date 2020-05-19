@@ -12,7 +12,7 @@ public:
 
 	ci::gl::TextureRef getTextureByAssetPath(std::string fullPath){
 	    std::cout << "*--- " << ci::app::getAssetPath(fullPath);
-	    return getTextureByFullPath(ci::app::getAssetPath(fullPath));
+	    return getTextureByFullPath(ci::app::getAssetPath(fullPath).string());
 	}
 
 	// caching textures
