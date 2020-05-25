@@ -2,6 +2,8 @@
 *.DS_STORE
 [Tt]humbs.db
 
+sample/build
+
 # Compiled Object files
 *.slo
 *.lo
