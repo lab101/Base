@@ -9,21 +9,19 @@
 
 
 
-class HttpSurfaceLoadEvent {
+class SurfaceLoadEvent {
     
 public:
-    HttpSurfaceLoadEvent() : isHandled(false), isLoaded(false) {
-    };
+    SurfaceLoadEvent() : isHandled(false), isLoaded(false) {};
     
-    ~HttpSurfaceLoadEvent() {};
+    ~SurfaceLoadEvent() {};
     
     bool isHandled;
     bool isLoaded;
     uint loadId;
     std::string cacheKey;
-    bool isCached;
-    
-    std::function<void(HttpSurfaceLoadEvent&)> callback;
+
+    std::function<void(SurfaceLoadEvent&)> callback;
     
     std::string url;
     ci::SurfaceRef response;
@@ -32,19 +30,17 @@ public:
 class AssetCache
 {
 
-    std::map<std::string,ci::gl::TextureRef> textures;
+    std::map<std::string,ci::gl::TextureRef> textureCache;
     
     // threading stuff
     std::thread httpWorkerThread;
-    std::deque<HttpSurfaceLoadEvent> httpWorkQueue;
-    std::vector<HttpSurfaceLoadEvent> eventsToDispatch;
+    std::deque<SurfaceLoadEvent> httpWorkQueue;
+    std::vector<SurfaceLoadEvent> eventsToDispatch;
     std::mutex eventsMutex;
     std::mutex workQueueMutex;
     bool isThreadRunning;
     std::thread workerThread;
-    
     std::string mCachePath;
-
 
 
 public:
@@ -66,22 +62,45 @@ public:
 	// caching textures
 	ci::gl::TextureRef getTextureByFullPath(std::string fullPath)
 	{
-        auto it = textures.find(fullPath);
-        if(it != textures.end()){
+        auto it = textureCache.find(fullPath);
+        if(it != textureCache.end()){
             return it->second;
         }else{
             ci::gl::TextureRef texture = ci::gl::Texture::create(ci::loadImage(fullPath));
-            textures[fullPath] = texture;
+            textureCache[fullPath] = texture;
       		return texture;
         }
 	}
-    
-    
-    void getSurfaceByUrl(std::string url, std::string cacheKey, std::function<void(HttpSurfaceLoadEvent)> callback){
+
+    void getCachedTextureAsync(std::string path, std::string cacheKey, std::function<void(ci::gl::TextureRef)> callback) {
+        // search for texture in current texturecache.
+        auto it = textureCache.find(cacheKey);
+
+        if(it != textureCache.end()){
+            callback(it->second);
+        }else{
+            getSurfaceAsync(path,cacheKey,[=](SurfaceLoadEvent e){
+                if(e.response != nullptr){
+                    ci::gl::TextureRef texture = ci::gl::Texture::create(*e.response);
+                    textureCache[cacheKey] = texture;
+                    callback(texture);
+                }else{
+                    callback(nullptr);
+                }
+
+            });
+        }
+
+
+
+	}
+
+
+	void getSurfaceAsync(std::string url, std::string cacheKey, std::function<void(SurfaceLoadEvent)> callback){
         
         if(!isThreadRunning) start();
-        
-        HttpSurfaceLoadEvent e;
+
+        SurfaceLoadEvent e;
         
         if(cacheKey != ""){
             std::string cachePath = mCachePath + "/" + cacheKey + ".png";
@@ -99,24 +118,19 @@ public:
                     
                 };
             }
-            
             e.cacheKey = cacheKey;
-            e.isCached = true;
         }
         
         workQueueMutex.lock();
         httpWorkQueue.push_back(e);
         httpWorkQueue.back().url = url;
         httpWorkQueue.back().callback = callback;
-        
-        
-        
-        workQueueMutex.unlock();
 
+        workQueueMutex.unlock();
     }
     
-    void getSurfaceByUrl(std::string url, std::function<void(HttpSurfaceLoadEvent)> callback){
-        getSurfaceByUrl(url, "", callback);
+    void getSurfaceAsync(std::string url, std::function<void(SurfaceLoadEvent)> callback){
+        getSurfaceAsync(url, "", callback);
     }
 
 
@@ -134,7 +148,7 @@ public:
     void worker()
     {
         bool isWorkQueueEmpty;
-        HttpSurfaceLoadEvent httpLoadEvent;
+        SurfaceLoadEvent httpLoadEvent;
         
         while (isThreadRunning) {
             
@@ -156,20 +170,25 @@ public:
                     eventsToDispatch.push_back(httpLoadEvent);
                     eventsMutex.unlock();
                 }
-                
-                
             }
             std::this_thread::sleep_for(std::chrono::milliseconds(20));
         }
     }
     
     
-    void doWork(HttpSurfaceLoadEvent& httpLoadEvent) {
+    void doWork(SurfaceLoadEvent& httpLoadEvent) {
         try {
-            
-            httpLoadEvent.response = ci::Surface::create(loadImage(loadUrl(httpLoadEvent.url, ci::UrlOptions().timeout(1.0f).ignoreCache())));
+            bool isUrl = httpLoadEvent.url.find("http") != std::string::npos;
+
+            ci::SurfaceRef surface = nullptr;
+            if(isUrl){
+                httpLoadEvent.response = ci::Surface::create(loadImage(loadUrl(httpLoadEvent.url, ci::UrlOptions().timeout(1.0f).ignoreCache())));
+            }else{
+                httpLoadEvent.response = ci::Surface::create(ci::loadImage(httpLoadEvent.url));
+            }
+
             httpLoadEvent.isLoaded = true;
-            if(httpLoadEvent.isCached){
+            if(isUrl){
                 std::string savePath = mCachePath + "/" + httpLoadEvent.cacheKey + ".png";
                 ci::writeImage(savePath, *httpLoadEvent.response);
             }
@@ -184,7 +203,7 @@ public:
     void update() {
         eventsMutex.lock();
         
-        for (HttpSurfaceLoadEvent& e : eventsToDispatch) {
+        for (SurfaceLoadEvent& e : eventsToDispatch) {
             if (!e.isHandled) {
                 if (e.callback){
                   e.callback(e);
@@ -193,7 +212,7 @@ public:
             }
         }
         
-        eventsToDispatch.erase(remove_if(eventsToDispatch.begin(), eventsToDispatch.end(), [](HttpSurfaceLoadEvent e) { return e.isHandled; }), eventsToDispatch.end());
+        eventsToDispatch.erase(remove_if(eventsToDispatch.begin(), eventsToDispatch.end(), [](SurfaceLoadEvent e) { return e.isHandled; }), eventsToDispatch.end());
         eventsMutex.unlock();
     }
 

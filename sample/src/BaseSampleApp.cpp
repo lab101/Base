@@ -29,11 +29,7 @@ void BaseSampleApp::setup()
 
 //    GS()->setup(appName);
     setupLogging();
-    std::string url = "https://wp-assets-sh.imgix.net/sites/787/2018/02/mini7.jpg";
-    CACHE()->getSurfaceByUrl(url, "cacheKey" , [=] (HttpSurfaceLoadEvent event){
-        
-        mTexture = gl::Texture::create(*event.response);
-    });
+
         
     CACHE()->start();
 }
@@ -56,14 +52,23 @@ void BaseSampleApp::setupLogging() {
 void BaseSampleApp::keyDown(KeyEvent event)
 {
 	if (event.getChar() == 'd') {
-		//GS()->debugMode.setValue(!GS()->debugMode.value());
+        std::string url = "https://wp-assets-sh.imgix.net/sites/787/2018/02/mini7.jpg";
+
+        CACHE()->getCachedTextureAsync(url, "fdsf" , [=] (gl::TextureRef event){
+            mTexture = event;
+        });
 	}
 	else if (event.getCode() == event.KEY_f) {
 		setFullScreen(!isFullScreen());
 	}
-	else if (event.getCode() == event.KEY_s) {
-		//GS()->mSettingManager.writeSettings();
+	else if (event.getCode() == event.KEY_SPACE) {
+        std::string url = "/home/lab101/Pictures/test.png";
+        CACHE()->getCachedTextureAsync(url, "cacheKey45" , [=] (gl::TextureRef event){
+            mTexture = event;
+        });
 	}
+
+
 
 }
 
@@ -75,9 +80,12 @@ void BaseSampleApp::update()
 
 void BaseSampleApp::draw()
 {
+    gl::clear();
     if(mTexture){
         gl::draw(mTexture);
     }
+
+    gl::drawString(to_string(app::getElapsedSeconds()), vec2(200,200));
 
 }
 
