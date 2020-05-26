@@ -7,7 +7,7 @@
 #include <thread>
 #include <mutex>
 #include "httplib.h"
-
+#include "LUrlParser.h"
 
 
 class SurfaceLoadEvent {
@@ -195,27 +195,32 @@ public:
 
             ci::SurfaceRef surface = nullptr;
             if(isUrl){
-                
-                std::string url = "http://localhost:3000/?id=59de08cb9cfdc0a704f4dacde&type=library&lang=NL";
-                ci::UrlOptions options;
-                options.timeout(2.4f);
-                options.ignoreCache();
-                httpLoadEvent.response = ci::Surface::create(loadImage(loadUrl(url, options)));
 
+                // load online thorug libhttp
+
+                LUrlParser::clParseURL url = LUrlParser::clParseURL::ParseURL(httpLoadEvent.url);
+                std::cout << httpLoadEvent.url << "--" <<  std::endl;
+
+                int port = 80;
+				if (url.m_Port != "") {
+					port = std::stoi(url.m_Port);
+				}
+
+				httplib::Client cli(url.m_Host.c_str(),port);
+                cli.set_connection_timeout(4.5,0);
+                std::string path = "/";
+                if(url.m_Path != "") path += url.m_Path;
+                if(url.m_Query != "") path += "?" + url.m_Query;
+
+                auto res = cli.Get(path.c_str());
                 
-//                // load online thorug libhttp
-//                httplib::Client2 cli("http://localhost:3000");
-//                cli.set_connection_timeout(4.5,0);
-//                auto res = cli.Get("/?id=59de08cb9cfdc0a704f4dacde&type=library&lang=NL");
-//                if (res && res->status == 200) {
-//                    auto b =  ci::Buffer::create( res->body.size());
-//                    memcpy( b->getData(), res->body.data(), b->getSize() );
-//                    ci::DataSourceBufferRef dataSourceBuffer = ci::DataSourceBuffer::create( b );
-//                    auto image = loadImage( dataSourceBuffer );
-//
-//                    httpLoadEvent.response = ci::Surface::create(image);
-//
-//                }
+                if (res && res->status == 200) {
+                    auto b =  ci::Buffer::create( res->body.size());
+                    memcpy( b->getData(), res->body.data(), b->getSize() );
+                    ci::DataSourceBufferRef dataSourceBuffer = ci::DataSourceBuffer::create( b );
+                    auto image = loadImage( dataSourceBuffer );
+                    httpLoadEvent.response = ci::Surface::create(image);
+                }
             }else{
                 httpLoadEvent.response = ci::Surface::create(ci::loadImage(httpLoadEvent.url));
             }

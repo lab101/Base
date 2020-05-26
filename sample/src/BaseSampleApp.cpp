@@ -94,11 +94,11 @@ void BaseSampleApp::setupLogging() {
 void BaseSampleApp::keyDown(KeyEvent event)
 {
 	if (event.getChar() == '1') {
-        std::string url = "https://images-assets.nasa.gov/image/KSC-20200523-PH-KLS03_0006/KSC-20200523-PH-KLS03_0006~orig.jpg";
+        std::string url = "http://amazone.lab101.be:3000/?id=54bb916d480a2d844cd72326&type=library&lang=NL";
 
         requestCount++;
 
-        CACHE()->getCachedTextureAsync(url, "nasss" , [=] (gl::TextureRef event){
+        CACHE()->getCachedTextureAsync(url, "nasss" +to_string(ci::app::getElapsedSeconds()) , [=] (gl::TextureRef event){
             requestCount--;
             mTexture = event;
         });
@@ -109,7 +109,7 @@ void BaseSampleApp::keyDown(KeyEvent event)
         
         requestCount++;
         
-        CACHE()->getCachedTextureAsync(url, "fdfsdfs" , [=] (gl::TextureRef event){
+        CACHE()->getCachedTextureAsync(url, "fdfsdfs" +to_string(ci::app::getElapsedSeconds())  , [=] (gl::TextureRef event){
             requestCount--;
             mTexture = event;
         });
@@ -140,6 +140,8 @@ void BaseSampleApp::draw()
         gl::draw(mTexture,ci::Rectf(0,0,getWindowWidth(),getWindowWidth()));
     }
 
+    const float centerX = getWindowWidth() * 0.5;
+    gl::drawSolidCircle(vec2(centerX + (sin(getElapsedSeconds()) * centerX),getWindowWidth() * 0.5),20);
     gl::drawString(to_string(app::getElapsedSeconds()), vec2(200,200));
     gl::drawString(to_string(requestCount), vec2(200,230));
     gl::drawString(to_string(CACHE()->getQueueSize()), vec2(200,260));

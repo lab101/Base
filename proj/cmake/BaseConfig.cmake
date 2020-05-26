@@ -6,6 +6,8 @@ if( NOT TARGET Base )
 	list( APPEND BASE_SOURCES
 		${BASE_SOURCE_PATH}/Settings/SettingController.cpp
 		${BASE_SOURCE_PATH}/Settings/SettingManager.cpp
+    		${BASE_SOURCE_PATH}/AssetLoader/LUrlParser.cpp
+
 	)
 	add_library( Base ${BASE_SOURCES})
 

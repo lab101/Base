@@ -20,8 +20,7 @@ set( SRC_FILES
 	${APP_PATH}/../src/Singleton.h
     ${APP_PATH}/../src/AssetLoader/AssetsCache.h
     ${APP_PATH}/../src/AssetLoader/httplib.h
-    ${APP_PATH}/../src/AssetLoader/LURLParser.cpp
-    ${APP_PATH}/../src/AssetLoader/LURLParser.h
+    ${APP_PATH}/../src/AssetLoader/LUrlParser.cpp
 )
 
 
