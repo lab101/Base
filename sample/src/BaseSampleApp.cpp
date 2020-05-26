@@ -2,8 +2,9 @@
 #include "cinder/app/RendererGl.h"
 #include "cinder/Log.h"
 #include "cinder/Surface.h"
+#include "cinder/Base64.h"
 //#include "GlobalSettings.h"
-#include "../../src/AssetsCache.h"
+#include "../../src/AssetLoader/AssetsCache.h"
 
 using namespace ci;
 using namespace ci::app;
@@ -19,6 +20,7 @@ public:
 
 private:
     ci::gl::TextureRef mTexture = nullptr;
+    int requestCount = 0;
 };
 
 std::string const appName = "BaseSampleApp";
@@ -32,6 +34,46 @@ void BaseSampleApp::setup()
 
         
     CACHE()->start();
+    
+    httplib::Client cli("amazone.lab101.be",4000);
+
+    //auto cli = httplib::Client2("http://amazone.lab101.be:4000");
+    
+    cli.set_connection_timeout(0.5,0);
+    auto res = cli.Get("/IMG_0933.JPG");
+
+    
+  //  auto res = cli.Get("");
+    if (res && res->status == 200) {
+      //  std::cout << res->body << std::endl;
+        
+        //Buffer b = ;
+       // BufferRef bb = make_shared<Buffer>(( res->body ));
+        //BufferRef bb = Buffer::create(b, b.getSize());
+        //auto dd = DataSourceBuffer::create(bb);
+       // Buffer ere = fromBase64( res->body );
+        //DataSourceBufferRef dataSourceBuffer = DataSourceBuffer::create( ere );
+
+        
+     //   auto dataSource = loadFile( "" );
+      //  auto buffer = dataSource->getBuffer();
+        //DataSourceBufferRef dataSourceBuffer = DataSourceBuffer::create( bb );
+        auto b =  Buffer::create( res->body.size());
+        memcpy( b->getData(), res->body.data(), b->getSize() );
+        
+     //   auto dataSource = loa
+        //auto buffer = dataSource->getBuffer();
+        DataSourceBufferRef dataSourceBuffer = DataSourceBuffer::create( b );
+      //  ci::DataSourceBuffer::create(res->body);
+        auto image = loadImage( dataSourceBuffer );
+        auto surf = Surface::create(image);
+        mTexture = ci::gl::Texture::create(*surf);
+        //auto image = loadImage( res->body );
+        
+        //auto img  = ci::loadImage();
+        //auto s = loadImage(load (res->body);
+     //   auto surf = Surface::create(res->body, 300, 300,3,SurfaceChannelOrder::RGB);
+    }
 }
 
 
@@ -51,15 +93,28 @@ void BaseSampleApp::setupLogging() {
 
 void BaseSampleApp::keyDown(KeyEvent event)
 {
-	if (event.getChar() == 'd') {
-        std::string url = "https://wp-assets-sh.imgix.net/sites/787/2018/02/mini7.jpg";
+	if (event.getChar() == '1') {
+        std::string url = "https://images-assets.nasa.gov/image/KSC-20200523-PH-KLS03_0006/KSC-20200523-PH-KLS03_0006~orig.jpg";
 
-        CACHE()->getCachedTextureAsync(url, "fdsf" , [=] (gl::TextureRef event){
+        requestCount++;
+
+        CACHE()->getCachedTextureAsync(url, "nasss" , [=] (gl::TextureRef event){
+            requestCount--;
             mTexture = event;
         });
 	}
-	else if (event.getCode() == event.KEY_f) {
-		setFullScreen(!isFullScreen());
+    else if (event.getChar() == '2') {
+
+        std::string url = "http://amazone.lab101.be:4000/IMG_0933.JPG";
+        
+        requestCount++;
+        
+        CACHE()->getCachedTextureAsync(url, "fdfsdfs" , [=] (gl::TextureRef event){
+            requestCount--;
+            mTexture = event;
+        });
+        
+	//	setFullScreen(!isFullScreen());
 	}
 	else if (event.getCode() == event.KEY_SPACE) {
         std::string url = "/home/lab101/Pictures/test.png";
@@ -82,10 +137,13 @@ void BaseSampleApp::draw()
 {
     gl::clear();
     if(mTexture){
-        gl::draw(mTexture);
+        gl::draw(mTexture,ci::Rectf(0,0,getWindowWidth(),getWindowWidth()));
     }
 
     gl::drawString(to_string(app::getElapsedSeconds()), vec2(200,200));
+    gl::drawString(to_string(requestCount), vec2(200,230));
+    gl::drawString(to_string(CACHE()->getQueueSize()), vec2(200,260));
+
 
 }
 

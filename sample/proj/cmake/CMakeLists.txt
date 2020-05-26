@@ -18,7 +18,10 @@ include( "${CINDER_PATH}/proj/cmake/modules/cinderMakeApp.cmake" )
 set( SRC_FILES
 	${APP_PATH}/src/BaseSampleApp.cpp
 	${APP_PATH}/../src/Singleton.h
-	${APP_PATH}/../src/AssetsCache.h
+    ${APP_PATH}/../src/AssetLoader/AssetsCache.h
+    ${APP_PATH}/../src/AssetLoader/httplib.h
+    ${APP_PATH}/../src/AssetLoader/LURLParser.cpp
+    ${APP_PATH}/../src/AssetLoader/LURLParser.h
 )
 
 

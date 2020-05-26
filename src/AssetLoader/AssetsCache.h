@@ -1,11 +1,12 @@
 #pragma once
-#include "Singleton.h"
+#include "../Singleton.h"
 #include "cinder/app/App.h"
 #include "cinder/Font.h"
 #include "cinder/ImageIo.h"
 #include "cinder/gl/gl.h"
 #include <thread>
 #include <mutex>
+#include "httplib.h"
 
 
 
@@ -49,11 +50,23 @@ public:
         
         // create cache folder
        mCachePath = ci::app::getAssetPath("").string() + "cache";
+        std::cout << "*--- " << mCachePath << std::endl;
+
         if (!ci::fs::exists(mCachePath)) {
             ci::fs::create_directories(mCachePath);
         }
     };
 
+    
+    int getQueueSize(){
+        int queueSize = 0;
+        workQueueMutex.lock();
+        queueSize = httpWorkQueue.size();
+        workQueueMutex.unlock();
+        
+        return queueSize;
+    }
+    
 	ci::gl::TextureRef getTextureByAssetPath(std::string fullPath){
 	    std::cout << "*--- " << ci::app::getAssetPath(fullPath);
 	    return getTextureByFullPath(ci::app::getAssetPath(fullPath).string());
@@ -182,13 +195,33 @@ public:
 
             ci::SurfaceRef surface = nullptr;
             if(isUrl){
-                httpLoadEvent.response = ci::Surface::create(loadImage(loadUrl(httpLoadEvent.url, ci::UrlOptions().timeout(1.0f).ignoreCache())));
+                
+                std::string url = "http://localhost:3000/?id=59de08cb9cfdc0a704f4dacde&type=library&lang=NL";
+                ci::UrlOptions options;
+                options.timeout(2.4f);
+                options.ignoreCache();
+                httpLoadEvent.response = ci::Surface::create(loadImage(loadUrl(url, options)));
+
+                
+//                // load online thorug libhttp
+//                httplib::Client2 cli("http://localhost:3000");
+//                cli.set_connection_timeout(4.5,0);
+//                auto res = cli.Get("/?id=59de08cb9cfdc0a704f4dacde&type=library&lang=NL");
+//                if (res && res->status == 200) {
+//                    auto b =  ci::Buffer::create( res->body.size());
+//                    memcpy( b->getData(), res->body.data(), b->getSize() );
+//                    ci::DataSourceBufferRef dataSourceBuffer = ci::DataSourceBuffer::create( b );
+//                    auto image = loadImage( dataSourceBuffer );
+//
+//                    httpLoadEvent.response = ci::Surface::create(image);
+//
+//                }
             }else{
                 httpLoadEvent.response = ci::Surface::create(ci::loadImage(httpLoadEvent.url));
             }
 
             httpLoadEvent.isLoaded = true;
-            if(isUrl){
+            if(isUrl && httpLoadEvent.response != nullptr){
                 std::string savePath = mCachePath + "/" + httpLoadEvent.cacheKey + ".png";
                 ci::writeImage(savePath, *httpLoadEvent.response);
             }
