@@ -79,9 +79,14 @@ public:
         if(it != textureCache.end()){
             return it->second;
         }else{
-            ci::gl::TextureRef texture = ci::gl::Texture::create(ci::loadImage(fullPath));
-            textureCache[fullPath] = texture;
-      		return texture;
+            try{
+                ci::gl::TextureRef texture = ci::gl::Texture::create(ci::loadImage(fullPath));
+                textureCache[fullPath] = texture;
+                return texture;
+            }catch(...){
+                return nullptr;
+            }
+
         }
 	}
 
@@ -207,7 +212,9 @@ public:
 				}
 
 				httplib::Client cli(url.m_Host.c_str(),port);
-                cli.set_connection_timeout(4.5,0);
+                time_t const timeout = 4;
+
+                cli.set_read_timeout(timeout,0);
                 std::string path = "/";
                 if(url.m_Path != "") path += url.m_Path;
                 if(url.m_Query != "") path += "?" + url.m_Query;

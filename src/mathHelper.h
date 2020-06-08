@@ -1,8 +1,8 @@
-
+#pragma once
 
 namespace lab101 {
 
-	inline float ofMap(float value, float inputMin, float inputMax, float outputMin, float outputMax, bool clamp) {
+	inline float ofMap(float value, float inputMin, float inputMax, float outputMin, float outputMax, bool clamp = true) {
 	  
 	   if (fabs(inputMin - inputMax) < FLT_EPSILON){
 		   return outputMin;
