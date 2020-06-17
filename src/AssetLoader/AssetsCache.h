@@ -55,7 +55,6 @@ public:
 
         // create cache folder
         mCachePath = ci::app::getAssetPath("").string() + "cache";
-        std::cout << "*--- " << mCachePath << std::endl;
 
         if (!ci::fs::exists(mCachePath)) {
             ci::fs::create_directories(mCachePath);
@@ -296,10 +295,6 @@ public:
     }
 
     void removeByUrl(std::string removeUrl){
-        std::cout << "remove " << removeUrl << std::endl;
-
-
-
 
         // remove from events.
         eventsMutex.lock();
@@ -309,10 +304,6 @@ public:
                                          [&](SurfaceLoadEvent e) { return e.url == removeUrl; }), eventsToDispatch.end());
         eventsMutex.unlock();
 
-        std::cout << "******" << std::endl;
-        for(auto e : eventsToDispatch){
-            std::cout << e.url << std::endl;
-        }
         // remove from work.
         workQueueMutex.lock();
         httpWorkQueue.erase(remove_if(httpWorkQueue.begin(), httpWorkQueue.end(),
@@ -327,7 +318,6 @@ public:
 
         for (SurfaceLoadEvent &e : eventsToDispatch) {
             if (!e.isHandled && e.isLoaded) {
-                std::cout << "trigger callback " << e.url << std::endl;
                 if (e.callback) {
                     e.callback(e);
                 }
