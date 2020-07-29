@@ -319,9 +319,8 @@ public:
         httpWorkQueue.erase(remove_if(httpWorkQueue.begin(), httpWorkQueue.end(),
                 [&](SurfaceLoadEvent e) { return e.url == removeUrl; }), httpWorkQueue.end());
         workQueueMutex.unlock();
-
-
     }
+
 
     void update() {
         eventsMutex.lock();

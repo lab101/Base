@@ -22,7 +22,11 @@ namespace lab101 {
 		   }
 		   return outVal;
 	   }
-	  
+
+	}
+
+	inline float toDegrees(float radians){
+	    return radians * M_PI / 180;
 	}
 
 }
