@@ -44,16 +44,21 @@ namespace lab101 {
 
     template<typename T>
     inline T getNodeObject(ci::XmlTree &doc, std::string path) {
-        T v = T();
+        T value = T();
 
         if (doc.hasChild(path)) {
             ci::XmlTree node = doc.getChild(path);
-            v.x = node.getAttributeValue<int>("x");
-            v.y = node.getAttributeValue<int>("y");
+            int elements = value.length();
+            std::string labels[4] = {"x","y","z","w"};
+            for(int i=0;i < elements;++i){
+               value[i] = node.getAttributeValue<float>(labels[i]);
+            }
+
+
         } else {
             CI_LOG_E("missing xml node " + path);
         }
-        return v;
+        return value;
     }
 
 
@@ -63,11 +68,11 @@ namespace lab101 {
         bool isBool = std::is_same<T, bool>::value;;
         ci::XmlTree node(name, "");
 
-        if (isBool) {
-            node.setValue(value ? "true" : "false");
-        } else {
+       // if (isBool) {
+       //     node.setValue(value == 1 ? "true" : "false");
+       // } else {
             node.setValue(value);
-        }
+       // }
 
         return node;
     }
@@ -75,17 +80,14 @@ namespace lab101 {
     template<typename T>
     inline ci::XmlTree setObject(std::string name, T value) {
 
-        bool isVec3 = std::is_same<T, ci::vec3>::value;
-        bool isVec2 = std::is_same<T, ci::vec2>::value;
+        int elements = value.length();
         ci::XmlTree node(name, "");
 
-        if (isVec2 || isVec3) {
-            node.setAttribute("x", value[0]);
-            node.setAttribute("y", value[1]);
-            if (isVec3) node.setAttribute("z", value[2]);
+        std::string labels[4] = {"x","y","z","w"};
+
+        for(int i=0;i < elements;++i){
+            node.setAttribute(labels[i], value[i]);
         }
-
-
         return node;
     }
 
