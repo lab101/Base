@@ -22,6 +22,7 @@ void SettingController::setup(SettingManager* settingManager){
 void SettingController::draw(){
     
     if(!isSetup){
+        CI_LOG_E("setup not run on SettingController");
         return;
         //setup();
     }

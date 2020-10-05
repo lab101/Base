@@ -1,0 +1,70 @@
+//
+// Created by lab101 on 16/09/2020.
+//
+
+#ifndef INC_3DSTATION_FILEHELPER_H
+#define INC_3DSTATION_FILEHELPER_H
+
+#include "string"
+
+#include <time.h>
+#include <chrono>
+#include <ctime>
+#include <chrono>
+#include <iostream>
+#include "cinder/app/App.h"
+#include "cinder/Filesystem.h"
+
+
+
+inline float getLastWrittenTimeInSeconds(std::string filePath){
+
+    std::chrono::time_point<std::chrono::system_clock> now = std::chrono::system_clock::now();
+    auto createdTime = ci::fs::last_write_time(filePath);
+    //auto aa = duration_cast<seconds>(now.time_since_epoch() -createdTime.time_since_epoch());
+    auto aa = now.time_since_epoch() - createdTime.time_since_epoch();
+}
+
+
+inline std::vector<std::string> readDirectory(std::string directory,std::string extension)
+{
+
+    std::vector<std::string> filenames;
+    for (ci::fs::directory_iterator it(directory); it != ci::fs::directory_iterator(); ++it) {
+        {
+            if (!is_directory(*it)) {
+
+                std::string extension = it->path().extension().string();
+                if (extension == extension) {
+                    std::cout << "found file" << it->path() << std::endl;
+                    filenames.push_back(it->path());
+                }
+            }
+        }
+    }
+
+    return filenames;
+
+
+};
+
+inline std::string readFile(std::string path){
+
+//read data
+    try{
+
+        std::ifstream f(path);
+        std::stringstream buf;
+        buf << f.rdbuf();
+        std::string data = buf.str();
+        return data;
+    }
+    catch(...){
+        CI_LOG_E("ERROR reading file: " << path);
+        return "";
+    }
+}
+
+
+
+#endif //INC_3DSTATION_FILEHELPER_H
