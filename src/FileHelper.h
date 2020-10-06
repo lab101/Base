@@ -43,6 +43,8 @@ inline std::vector<std::string> readDirectory(std::string directory,std::string 
         }
     }
 
+    sort(filenames.begin(),filenames.end());
+
     return filenames;
 
 
