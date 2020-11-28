@@ -26,10 +26,10 @@ inline float getLastWrittenTimeInSeconds(std::string filePath){
 }
 
 
-inline std::vector<std::string> readDirectory(std::string directory,std::string extension)
+inline std::vector<ci::fs::path> readDirectory(std::string directory,std::string extension)
 {
 
-    std::vector<std::string> filenames;
+    std::vector<ci::fs::path> filenames;
     for (ci::fs::directory_iterator it(directory); it != ci::fs::directory_iterator(); ++it) {
         {
             if (!is_directory(*it)) {
@@ -46,9 +46,15 @@ inline std::vector<std::string> readDirectory(std::string directory,std::string 
     sort(filenames.begin(),filenames.end());
 
     return filenames;
-
-
 };
+
+inline std::vector<std::string> getStringList(std::vector<ci::fs::path> files){
+    std::vector<std::string> fileNames;
+    for(auto& file : files){
+        fileNames.push_back(file.filename().string());
+    }
+    return fileNames;
+}
 
 inline std::string readFile(std::string path){
 
