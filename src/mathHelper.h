@@ -2,6 +2,7 @@
 
 namespace lab101 {
 
+    // ofMap from openframeworks source
 	inline float ofMap(float value, float inputMin, float inputMax, float outputMin, float outputMax, bool clamp = true) {
 	  
 	   if (fabs(inputMin - inputMax) < FLT_EPSILON){
