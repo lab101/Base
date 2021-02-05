@@ -30,4 +30,20 @@ namespace lab101 {
 	    return radians * M_PI / 180;
 	}
 
+
+inline int getInRangeIndex(int index,int max){
+    
+   
+    index = index % max;
+    while(index<0){
+        index+=max;
+    }
+   
+    return index;
+   // std::cout << "mod " << index << std::endl;
+
+   
+   
+}
+
 }
