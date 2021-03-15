@@ -26,7 +26,9 @@ inline float getLastWrittenTimeInSeconds(std::string filePath){
 }
 
 
-inline std::vector<ci::fs::path> readDirectory(std::string directory,std::string extension)
+
+
+inline std::vector<ci::fs::path> readDirectory(std::string directory,std::vector<std::string> extensions)
 {
 
     std::vector<ci::fs::path> filenames;
@@ -34,10 +36,16 @@ inline std::vector<ci::fs::path> readDirectory(std::string directory,std::string
         {
             if (!is_directory(*it)) {
 
-                std::string extension = it->path().extension().string();
-                if (extension == extension) {
-                    std::cout << "found file" << it->path() << std::endl;
-                    filenames.push_back(it->path());
+                for(auto& extensionFilter : extensions){
+                    std::string extension = it->path().extension().string();
+                    ///std::cout << "extension" << it->path() << std::endl;
+
+                    if (extensionFilter == extension) {
+                        std::cout << "found file" << it->path() << std::endl;
+                        filenames.push_back(it->path());
+                        // break from extension loop
+                        break;
+                    }
                 }
             }
         }
@@ -47,6 +55,13 @@ inline std::vector<ci::fs::path> readDirectory(std::string directory,std::string
 
     return filenames;
 };
+
+
+inline std::vector<ci::fs::path> readDirectory(std::string directory,std::string extension){
+    std::vector<std::string> extensions = {extension};
+    return readDirectory(directory, extensions);
+}
+
 
 inline std::vector<std::string> getStringList(std::vector<ci::fs::path> files){
     std::vector<std::string> fileNames;
