@@ -12,7 +12,10 @@
 #include <ctime>
 #include <chrono>
 #include <iostream>
+#include <fstream>
+
 #include "cinder/app/App.h"
+#include "cinder/log.h"
 #include "cinder/Filesystem.h"
 
 
@@ -83,7 +86,7 @@ inline std::string readFile(std::string path){
         return data;
     }
     catch(...){
-        CI_LOG_E("ERROR reading file: " << path);
+        CI_LOG_E("ERROR reading file: " + path);
         return "";
     }
 }
