@@ -15,7 +15,7 @@
 #include <fstream>
 
 #include "cinder/app/App.h"
-#include "cinder/log.h"
+#include "cinder/Log.h"
 #include "cinder/Filesystem.h"
 
 

@@ -77,7 +77,7 @@ LUrlParser::clParseURL LUrlParser::clParseURL::ParseURL( const std::string& URL 
 			return clParseURL( LUrlParserError_NoUrlCharacter );
 		}
 
-		// save the scheme name
+		// saveSelectedStyle the scheme name
 		Result.m_Scheme = std::string( CurrentString, LocalString - CurrentString );
 
 		if ( !IsSchemeValid( Result.m_Scheme ) )

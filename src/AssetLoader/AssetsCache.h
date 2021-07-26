@@ -105,6 +105,11 @@ public:
 		}
 	}
 
+	void getCachedTextureByAssetPathAsync(std::string assetPath, std::string cacheKey, std::function<void(ci::gl::TextureRef)> callback) {
+		getCachedTextureAsync(ci::app::getAssetPath(assetPath).string(),cacheKey,callback);
+
+	}
+
 	void
 		getCachedTextureAsync(std::string path, std::string cacheKey, std::function<void(ci::gl::TextureRef)> callback) {
 		// search for texture in current texturecache.
@@ -294,7 +299,7 @@ public:
 			}
 		}
 		catch (...) {
-			std::cout << "err " << std::endl;
+			std::cout << "asset cache loading error " << httpLoadEvent.url <<  std::endl;
 
 			//httpLoadEvent.st
 			// todo error handeling

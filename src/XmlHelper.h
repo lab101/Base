@@ -35,7 +35,7 @@ namespace lab101 {
                 v = node.getValue<T>();
             }
         } else {
-            CI_LOG_E("missing xml node " + path);
+            CI_LOG_E("missing xml node " + path + " in " + doc.getTag());
         }
 
         return v;
