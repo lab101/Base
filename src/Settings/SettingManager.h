@@ -140,10 +140,10 @@ class SettingManager{
 
 
     std::string const getSettingPath(){
-        //return ci::app::getAssetPath("").string() + "/settings.json";
+        return ci::app::getAssetPath("").string() + "/settings.json";
       //  getDocumentsDirectory();
         
-		return ci::getDocumentsDirectory().string() + "/settings_" + mAppName + ".json";
+		//return ci::getDocumentsDirectory().string() + "/settings_" + mAppName + ".json";
     }
     static SettingManager* instance;
     

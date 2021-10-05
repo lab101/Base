@@ -1,7 +1,5 @@
 //
 //  SettingManager.cpp
-//  InovationWall
-//
 
 #include "SettingManager.h"
 
@@ -54,14 +52,9 @@ void SettingManager::readSettings(){
         return;
     }
     else{
-        
-        
         string file_contents { istreambuf_iterator<char>(input), istreambuf_iterator<char>() };
-        
         storedSettingsJson = JsonTree(file_contents);
-        
         CI_LOG_I("found " << storedSettingsJson.getNumChildren() << " settings");
-        
         input.close();
     }
     
@@ -74,7 +67,6 @@ void SettingManager::writeSettings(){
     JsonTree settingsJson = JsonTree::makeArray();
     
     for (SettingBase* s : settings){
-        
         // JsonTree setting = JsonTree::makeObject();
         // setting.addChild(s->toJson());
         settingsJson.pushBack(s->toJson());
