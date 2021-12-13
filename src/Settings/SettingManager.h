@@ -20,7 +20,6 @@
 #include "cinder/Filesystem.h"
 #include "cinder/Log.h"
 #include "cinder/app/App.h"
-//#include "cinder/Signals.h"
 #include "cinder/Json.h"
 #include "cinder/Utilities.h"
 
@@ -137,13 +136,15 @@ class SettingManager{
     ci::JsonTree storedSettingsJson;
     
 	std::string mAppName;
-
+    bool mUseAssetFolder = false;
 
     std::string const getSettingPath(){
-        return ci::app::getAssetPath("").string() + "/settings.json";
-      //  getDocumentsDirectory();
-        
-		//return ci::getDocumentsDirectory().string() + "/settings_" + mAppName + ".json";
+        std::string fileName = "settings_" + mAppName + ".json";
+        if(mUseAssetFolder){
+            return ci::app::getAssetPath("").string() + "/" + fileName;
+        }else{
+            return ci::getDocumentsDirectory().string() + "/" + fileName;
+        }
     }
     static SettingManager* instance;
     
@@ -164,8 +165,9 @@ public:
       //  readSettings();
     }
     
-	void setAppName(std::string appName){
+	void setAppName(std::string appName, bool useAssetFolder = false){
 		mAppName = appName;
+        mUseAssetFolder = useAssetFolder;
 	}
 
     
