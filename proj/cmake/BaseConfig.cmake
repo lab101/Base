@@ -8,6 +8,7 @@ if( NOT TARGET Base )
 		${BASE_SOURCE_PATH}/Settings/SettingManager.cpp
     		${BASE_SOURCE_PATH}/AssetLoader/LUrlParser.cpp
     		${BASE_SOURCE_PATH}/TouchVisualiser.cpp
+    		${BASE_SOURCE_PATH}/StatsManager.cpp
 
 	)
 	add_library( Base ${BASE_SOURCES})
